@@ -52,10 +52,25 @@ contract RealEstate is ERC721, Ownable {
         require(ownerOf(propertyId) == msg.sender, "Not the property owner");
         _;
     }
+
+
     modifier onlySeller(uint256 propertyId) {
         require(properties[propertyId].seller == msg.sender, "Not the seller");
         _;
     }
+
+    modifier onlyBuyer(uint256 propertyId) {
+        require(properties[propertyId].buyer == msg.sender, "Not the buyer");
+        _;
+    }
+
+    modifier onlyInspector(uint256 propertyId) {
+        require(properties[propertyId].isInspectionPassed, "Inspection not passed");
+        _;
+    }
+
+
+
     constructor() ERC721("RealEstateNFT", "RENFT") Ownable(msg.sender) {
         _propertyIdCounter = 0;
     }
@@ -118,5 +133,63 @@ contract RealEstate is ERC721, Ownable {
 
         emit OfferAccepted(propertyId, properties[propertyId].buyer, salePrice);
     }
+
+
+
+    // Update inspection status (simulating oracle input)
+    function updateInspectionStatus(uint256 propertyId, bool isPassed) external onlyInspector(propertyId) {
+        properties[propertyId].isInspectionPassed = isPassed;
+        emit InspectionUpdated(propertyId, isPassed);
+    }
+
+
+    // Update financing status (simulating oracle input)
+    function updateFinancing(uint256 propertyId, bool approved) external onlyOwner {
+        properties[propertyId].FinancingApproved = approved;
+        if (approved) {
+            emit FinancingApproved(propertyId);
+        } else {
+            emit FinancingRejected(propertyId);
+        }
+    }
+
+
+    // complete transactions if conditions are met
+    function CompleteTransaction(uint256 propertyId) external {
+       Property memory property = properties[propertyId];
+       require(property.isListed, "Property not listed");
+       require(property.buyer == msg.sender || msg.sender == property.seller, "Not authorized to complete transaction");
+       require(property.isInspectionPassed, "Inspection not passed");
+       require(property.FinancingApproved, "Financing not approved");
+
+
+
+        properties[propertyId].isListed = false;
+        properties[propertyId].isSold = true;
+        _transfer(property.seller, property.buyer, propertyId);
+
+
+        payable(property.seller).transfer(escrowBalances[propertyId]);
+        escrowBalances[propertyId] = 0;
+        emit TransactionCompleted(propertyId, property.buyer, property.price);
+
+    }
+
+
+    // Refund deposit if transaction fails
+    function refundDeposit(uint256 propertyId) external onlyBuyer(propertyId) {
+        require(msg.sender == properties[propertyId].buyer, "Not the buyer");
+        require(properties[propertyId].isListed, "property not listed");
+        require(escrowBalances[propertyId] > 0, "No deposit to refund");
+
+
+        payable(msg.sender).transfer(escrowBalances[propertyId]);
+        properties[propertyId].buyer = payable(address(0));
+        properties[propertyId].offerAmount = 0;
+        escrowBalances[propertyId] = 0;
+    }
+
+
+
 
 }
