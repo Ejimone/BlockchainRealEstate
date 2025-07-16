@@ -4,7 +4,7 @@ import json
 import os
 
 # Configure Web3 to connect to Ganache
-GANACHE_URL = os.environ.get('GANACHE_URL', 'http://127.0.0.1:8545')
+GANACHE_URL = os.environ.get('GANACHE_URL')
 w3 = Web3(Web3.HTTPProvider(GANACHE_URL))
 
 # Load contract ABI and address

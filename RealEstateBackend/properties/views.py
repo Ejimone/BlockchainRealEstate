@@ -1,4 +1,5 @@
-from rest_framework import viewsets, status
+import os
+from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
@@ -24,9 +25,9 @@ class PropertyViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def perform_create(self, serializer):
-        seller_private_key = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" # Example private key from Ganache
+        seller_private_key = os.environ.get('SELLER_PRIVATE_KEY')
 
-        agent_address = self.request.user.userprofile.eth_address if hasattr(self.request.user, 'userprofile') and self.request.user.userprofile.eth_address else "0x0000000000000000000000000000000000000000" # Placeholder
+        agent_address = self.request.user.userprofile.eth_address if hasattr(self.request.user, 'userprofile') and self.request.user.userprofile.eth_address else "0x0000000000000000000000000000000000000000"
 
         price = serializer.validated_data['price']
         location = serializer.validated_data['location']
@@ -64,7 +65,7 @@ class PropertyViewSet(viewsets.ModelViewSet):
         property = self.get_object()
         serializer = InspectionUpdateSerializer(property, data=request.data, partial=True)
         if serializer.is_valid():
-            appraiser_private_key = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" # Example private key from Ganache
+            appraiser_private_key = os.environ.get('APPRAISER_PRIVATE_KEY')
 
             is_passed = serializer.validated_data.get('is_inspection_passed')
 
@@ -93,9 +94,9 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
         signer_private_key = "" # Placeholder
         if property.seller == request.user:
-            signer_private_key = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" # Seller's private key
+            signer_private_key = os.environ.get('SELLER_PRIVATE_KEY') # Seller's private key
         elif property.buyer == request.user:
-            signer_private_key = "0x59c6995e998f97a5a004496c17f0ab241a74142305fd218621064954ee166979" # Buyer's private key
+            signer_private_key = os.environ.get('BUYER_PRIVATE_KEY') # Buyer's private key
         else:
             return Response({'error': 'You are not authorized to complete this transaction.'}, status=status.HTTP_403_FORBIDDEN)
 
@@ -148,7 +149,7 @@ class OfferViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def perform_create(self, serializer):
-        buyer_private_key = "0x59c6995e998f97a5a004496c17f0ab241a74142305fd218621064954ee166979" # Example private key from Ganache
+        buyer_private_key = os.environ.get('BUYER_PRIVATE_KEY')
 
         property_id = serializer.validated_data['property'].id
         amount = serializer.validated_data['amount']
@@ -181,7 +182,7 @@ class OfferViewSet(viewsets.ModelViewSet):
         if property.seller != request.user:
             return Response({'error': 'You are not the seller of this property.'}, status=status.HTTP_403_FORBIDDEN)
 
-        seller_private_key = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" # Example private key from Ganache
+        seller_private_key = os.environ.get('SELLER_PRIVATE_KEY')
 
         try:
             from RealEstateBackend.blockchain import accept_offer_on_blockchain

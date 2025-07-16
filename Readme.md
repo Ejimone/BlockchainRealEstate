@@ -220,3 +220,18 @@ npx hardhat run scripts/auction-demo.js --network ganache
 
 
 
+
+ curl -X POST http://127.0.0.1:8000/api/users/ \
+         -H "Content-Type: application/json" \
+         -d '{
+             "username": "testuser_seller",
+             "password": "password123",
+             "email": "seller@example.com",
+             "user_type": "seller",
+             "userprofile": {
+                 "address": "123 Main St",
+                    "phone_number": "123-456-7890",
+                    "eth_address":
+      "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
+                }
+            }'
