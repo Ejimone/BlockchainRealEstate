@@ -27,3 +27,11 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
+
+class InspectionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Property
+        fields = ['is_inspection_passed']
+
+class OfferActionSerializer(serializers.Serializer):
+    pass
