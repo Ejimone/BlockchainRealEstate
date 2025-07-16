@@ -188,8 +188,4 @@ contract RealEstate is ERC721, Ownable {
         properties[propertyId].offerAmount = 0;
         escrowBalances[propertyId] = 0;
     }
-
-
-
-
 }
