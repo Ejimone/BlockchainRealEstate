@@ -4,20 +4,27 @@ async function main() {
     console.log("Starting RealEstate contract interaction...");
     
     // Contract address (update this with your deployed contract address)
-    const contractAddress = process.env.CONTRACT_ADDRESS || "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+    const contractAddress = process.env.CONTRACT_ADDRESS || "0x72BEd810fA7Dc49Ad300DAD894F8cDC8A2Dd1Af9";
     
     // Get contract instance
     const RealEstate = await ethers.getContractFactory("RealEstate");
     const realEstate = RealEstate.attach(contractAddress);
     
     // Get signers
-    const [owner, user1, user2, appraiser] = await ethers.getSigners();
+    const signers = await ethers.getSigners();
+    const [owner, user1] = signers;
+    
+    // Use available signers, assign roles appropriately
+    const seller = user1; // user1 will be the seller
+    const buyer = owner;  // owner will be the buyer
+    const appraiser = owner; // owner will also be the appraiser
     
     console.log("Contract Address:", contractAddress);
     console.log("Owner:", owner.address);
-    console.log("User1:", user1.address);
-    console.log("User2:", user2.address);
+    console.log("Seller:", seller.address);
+    console.log("Buyer:", buyer.address);
     console.log("Appraiser:", appraiser.address);
+    console.log("Available signers:", signers.length);
     
     try {
         // Set appraiser
@@ -26,15 +33,15 @@ async function main() {
         await setAppraisertx.wait();
         console.log("✅ Appraiser set to:", appraiser.address);
         
-        // Authorize user1 as agent
+        // Authorize seller as agent
         console.log("\n=== Authorizing Agent ===");
-        const authTx = await realEstate.connect(owner).setAgentAuthorization(user1.address, true);
+        const authTx = await realEstate.connect(owner).setAgentAuthorization(seller.address, true);
         await authTx.wait();
-        console.log("✅ Agent authorized:", user1.address);
+        console.log("✅ Agent authorized:", seller.address);
         
         // List a property
         console.log("\n=== Listing Property ===");
-        const listTx = await realEstate.connect(user1).listPropertySimple(
+        const listTx = await realEstate.connect(seller).listPropertySimple(
             ethers.parseEther("2.5"), // 2.5 ETH
             "123 Blockchain Avenue, DeFi City"
         );
@@ -51,7 +58,7 @@ async function main() {
         
         // Submit an offer
         console.log("\n=== Submitting Offer ===");
-        const offerTx = await realEstate.connect(user2).submitOfferSimple(0, {
+        const offerTx = await realEstate.connect(buyer).submitOfferSimple(0, {
             value: ethers.parseEther("2.3") // 2.3 ETH offer
         });
         await offerTx.wait();
@@ -68,7 +75,7 @@ async function main() {
         
         // Accept the offer
         console.log("\n=== Accepting Offer ===");
-        const acceptTx = await realEstate.connect(user1).acceptOffer(0, user2.address);
+        const acceptTx = await realEstate.connect(seller).acceptOffer(0, buyer.address);
         await acceptTx.wait();
         console.log("✅ Offer accepted successfully");
         
@@ -83,13 +90,13 @@ async function main() {
         console.log("\n=== NFT Ownership ===");
         const nftOwner = await realEstate.ownerOf(0);
         console.log("NFT Owner:", nftOwner);
-        console.log("NFT transferred to buyer:", nftOwner === user2.address);
+        console.log("NFT transferred to buyer:", nftOwner === buyer.address);
         
         // Get total properties
         const totalProperties = await realEstate.getTotalProperties();
         console.log("\n=== Summary ===");
         console.log("Total Properties:", totalProperties);
-        console.log("Properties by Owner:", await realEstate.getPropertiesByOwner(user1.address));
+        console.log("Properties by Owner:", await realEstate.getPropertiesByOwner(seller.address));
         
         console.log("\n✅ Interaction completed successfully!");
         

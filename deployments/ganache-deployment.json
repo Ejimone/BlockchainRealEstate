@@ -1,0 +1,9 @@
+{
+  "network": "ganache",
+  "chainId": "1337",
+  "contractAddress": "0x72BEd810fA7Dc49Ad300DAD894F8cDC8A2Dd1Af9",
+  "deployer": "0x2582A58a8Fed63466f8A475c6d1bfe71dbC93D28",
+  "deploymentTime": "2025-07-16T09:33:16.904Z",
+  "platformFee": "250",
+  "owner": "0x2582A58a8Fed63466f8A475c6d1bfe71dbC93D28"
+}

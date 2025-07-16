@@ -4,20 +4,24 @@ async function main() {
     console.log("Starting auction demo...");
     
     // Contract address (update this with your deployed contract address)
-    const contractAddress = process.env.CONTRACT_ADDRESS || "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+    const contractAddress = process.env.CONTRACT_ADDRESS || "0x72BEd810fA7Dc49Ad300DAD894F8cDC8A2Dd1Af9";
     
     // Get contract instance
     const RealEstate = await ethers.getContractFactory("RealEstate");
     const realEstate = RealEstate.attach(contractAddress);
     
     // Get signers
-    const [owner, seller, bidder1, bidder2, bidder3, appraiser] = await ethers.getSigners();
+    const signers = await ethers.getSigners();
+    const [owner, seller] = signers;
+    
+    // For Ganache with 2 accounts, use owner as bidder
+    const bidder1 = owner;
+    const appraiser = owner;
     
     console.log("Contract Address:", contractAddress);
     console.log("Seller:", seller.address);
     console.log("Bidder1:", bidder1.address);
-    console.log("Bidder2:", bidder2.address);
-    console.log("Bidder3:", bidder3.address);
+    console.log("Available signers:", signers.length);
     
     try {
         // Setup: Set appraiser and authorize seller
@@ -63,19 +67,8 @@ async function main() {
         await bid1Tx.wait();
         console.log("✅ Bidder1 placed bid of 2.1 ETH");
         
-        // Bidder 2 places higher bid
-        const bid2Tx = await realEstate.connect(bidder2).bidOnAuction(0, {
-            value: ethers.parseEther("2.5") // 2.5 ETH
-        });
-        await bid2Tx.wait();
-        console.log("✅ Bidder2 placed bid of 2.5 ETH");
-        
-        // Bidder 3 places highest bid
-        const bid3Tx = await realEstate.connect(bidder3).bidOnAuction(0, {
-            value: ethers.parseEther("2.8") // 2.8 ETH
-        });
-        await bid3Tx.wait();
-        console.log("✅ Bidder3 placed bid of 2.8 ETH");
+        // Seller can't bid on their own auction, so we'll simulate time passing
+        console.log("⏰ Simulating auction progress...");
         
         // Check updated auction details
         const updatedAuctionDetails = await realEstate.getAuctionDetails(0);

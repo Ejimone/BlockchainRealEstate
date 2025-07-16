@@ -4,7 +4,7 @@ async function main() {
     console.log("Verifying RealEstate contract...");
     
     // Contract address (update this with your deployed contract address)
-    const contractAddress = process.env.CONTRACT_ADDRESS || "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+    const contractAddress = process.env.CONTRACT_ADDRESS || "0x72BEd810fA7Dc49Ad300DAD894F8cDC8A2Dd1Af9";
     
     // Get contract instance
     const RealEstate = await ethers.getContractFactory("RealEstate");
@@ -41,7 +41,7 @@ async function main() {
         
         // Check total properties
         const totalProperties = await realEstate.getTotalProperties();
-        console.log("Total Properties:", totalProperties);
+        console.log("Total Properties:", totalProperties.toString());
         
         // Check contract name and symbol
         const name = await realEstate.name();
