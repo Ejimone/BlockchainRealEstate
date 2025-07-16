@@ -43,6 +43,19 @@ contract RealEstate is ERC721, Ownable {
     event OwnershipTransferred(uint256 indexed propertyId, address indexed newOwner);
     event TransactionCompleted(uint256 indexed propertyId, address indexed buyer, uint256 salePrice);
 
+
+
+
+
+
+    modifier onlyPropertyOwner(uint256 propertyId) {
+        require(ownerOf(propertyId) == msg.sender, "Not the property owner");
+        _;
+    }
+    modifier onlySeller(uint256 propertyId) {
+        require(properties[propertyId].seller == msg.sender, "Not the seller");
+        _;
+    }
     constructor() ERC721("RealEstateNFT", "RENFT") Ownable(msg.sender) {
         _propertyIdCounter = 0;
     }
@@ -84,6 +97,26 @@ contract RealEstate is ERC721, Ownable {
         ownerProperties[msg.sender].push(propertyId);
 
         emit OfferSubmitted(propertyId, msg.sender, msg.value);
+    }
+
+
+    // Seller accepts an offer
+    function acceptOffer(uint256 propertyId) onlySeller(propertyId) external {
+        require(properties[propertyId].isListed, "property not listed");
+        require(properties[propertyId].offerAmount > 0, "No offer to accept");
+
+        properties[propertyId].isSold = true;
+        properties[propertyId].isListed = false;
+
+        // Transfer the property to the buyer
+        _transfer(msg.sender, properties[propertyId].buyer, propertyId);
+
+        // Transfer the funds from escrow to the seller
+        uint256 salePrice = properties[propertyId].offerAmount;
+        escrowBalances[propertyId] -= salePrice;
+        properties[propertyId].seller.transfer(salePrice);
+
+        emit OfferAccepted(propertyId, properties[propertyId].buyer, salePrice);
     }
 
 }
