@@ -37,28 +37,19 @@ class PropertyViewSet(viewsets.ModelViewSet):
         bathrooms = serializer.validated_data.get('bathrooms', 0)
         agent_commission = serializer.validated_data.get('agent_commission', 0)
 
-        try:
-            from RealEstateBackend.blockchain import list_property_on_blockchain
-            tx_hash = list_property_on_blockchain(
-                seller_private_key,
-                float(price),
-                location,
-                property_type,
-                area,
-                bedrooms,
-                bathrooms,
-                agent_address,
-                int(agent_commission)
-            )
-            serializer.save(seller=self.request.user, transaction_hash=tx_hash)
-        except ContractLogicError as e:
-            raise serializers.ValidationError(f"Blockchain contract error: {e.args[0]}")
-        except TransactionNotFound:
-            raise serializers.ValidationError("Blockchain transaction not found. It might have failed or is still pending.")
-        except TimeExhausted:
-            raise serializers.ValidationError("Blockchain transaction timed out. Please try again.")
-        except Exception as e:
-            raise serializers.ValidationError(f"An unexpected blockchain error occurred: {e}")
+        from RealEstateBackend.blockchain import list_property_on_blockchain
+        tx_hash = list_property_on_blockchain(
+            seller_private_key,
+            float(price),
+            location,
+            property_type,
+            area,
+            bedrooms,
+            bathrooms,
+            agent_address,
+            int(agent_commission)
+        )
+        serializer.save(seller=self.request.user, transaction_hash=tx_hash)
 
     @action(detail=True, methods=['patch'])
     def update_inspection_status(self, request, pk=None):

@@ -1,4 +1,3 @@
-
 from web3 import Web3
 import json
 import os
@@ -59,9 +58,11 @@ def list_property_on_blockchain(seller_private_key, price, location, property_ty
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=seller_private_key)
+    print(f"DEBUG: Type of signed_tx (list_property): {type(signed_tx)}")
+    print(f"DEBUG: dir(signed_tx) (list_property): {dir(signed_tx)}")
 
     # Send the transaction
-    tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
 
     # Wait for the transaction to be mined
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -89,9 +90,11 @@ def submit_offer_on_blockchain(buyer_private_key, property_id, amount, expires_i
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=buyer_private_key)
+    print(f"DEBUG: Type of signed_tx (submit_offer): {type(signed_tx)}")
+    print(f"DEBUG: dir(signed_tx) (submit_offer): {dir(signed_tx)}")
 
     # Send the transaction
-    tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
 
     # Wait for the transaction to be mined
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -115,9 +118,11 @@ def accept_offer_on_blockchain(seller_private_key, property_id, buyer_address):
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=seller_private_key)
+    print(f"DEBUG: Type of signed_tx (accept_offer): {type(signed_tx)}")
+    print(f"DEBUG: dir(signed_tx) (accept_offer): {dir(signed_tx)}")
 
     # Send the transaction
-    tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
 
     # Wait for the transaction to be mined
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -141,9 +146,11 @@ def update_inspection_status_on_blockchain(appraiser_private_key, property_id, i
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=appraiser_private_key)
+    print(f"DEBUG: Type of signed_tx (update_inspection_status): {type(signed_tx)}")
+    print(f"DEBUG: dir(signed_tx) (update_inspection_status): {dir(signed_tx)}")
 
     # Send the transaction
-    tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
 
     # Wait for the transaction to be mined
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
@@ -166,9 +173,11 @@ def complete_transaction_on_blockchain(signer_private_key, property_id):
 
     # Sign the transaction
     signed_tx = w3.eth.account.sign_transaction(tx, private_key=signer_private_key)
+    print(f"DEBUG: Type of signed_tx (complete_transaction): {type(signed_tx)}")
+    print(f"DEBUG: dir(signed_tx) (complete_transaction): {dir(signed_tx)}")
 
     # Send the transaction
-    tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+    tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
 
     # Wait for the transaction to be mined
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
