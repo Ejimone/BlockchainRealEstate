@@ -172,7 +172,7 @@ Use the `APPRAISER_AUTH_TOKEN` (get it similarly to seller/buyer tokens). This a
 ```bash
 curl -X PATCH http://127.0.0.1:8000/api/properties/1/update_inspection_status/ \
 -H "Content-Type: application/json" \
--H "Authorization: Token APPRAISER_AUTH_TOKEN" \
+-H "Authorization: Token b38ef9d4ce62c6b37c70faa67269625b5fbccbea" \
 -d '{"is_inspection_passed": true}'
 ```
 (Replace `1` with the `property_id` from step 3.)
