@@ -19,8 +19,12 @@ contract RealEstate is ERC721, Ownable {
         uint256 offerAmount;
         bool isInspectionPassed;
         bool FinancingApproved;
-        
     }
+    
+    mapping(uint256 => Property) private properties;
+    mapping(uint256 => uint256) public escrowBalances;
+    mapping(address => uint256[]) private ownerProperties;
+    mapping(uint256 => address) private propertyApprovals;
 
 
     uint256 private _propertyIdCounter;
