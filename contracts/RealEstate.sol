@@ -69,4 +69,21 @@ contract RealEstate is ERC721, Ownable {
         emit PropertyListed(propertyId, msg.sender, price, details);
     }
 
+
+
+    // Submit an offer with a deposit
+    function submitOffer(uint256 propertyId) external payable {
+        require(properties[propertyId].isListed, "Property not listed");
+        require(msg.value > 0, "Deposit required");
+        require(properties[propertyId].offerAmount == 0, "Offer already exists");
+        require(properties[propertyId].seller != msg.sender, "Seller cannot submit an offer");
+
+        properties[propertyId].offerAmount = msg.value;
+        properties[propertyId].buyer = payable(msg.sender);
+        escrowBalances[propertyId] += msg.value;
+        ownerProperties[msg.sender].push(propertyId);
+
+        emit OfferSubmitted(propertyId, msg.sender, msg.value);
+    }
+
 }
