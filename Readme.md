@@ -33,12 +33,19 @@ In a smart contract system, some roles (e.g., brokers, title companies) may be p
 
 3. Detailed Breakdown of Real Estate Processes
 Each step in the real estate transaction process can be mapped to specific functions within a smart contract:
+
+
+
 3.1. Listing a Property
 Traditional Process: Sellers list properties through agents or platforms, providing details like price, location, and features.
 Smart Contract Approach:
 Sellers can list properties directly on the blockchain by creating a unique token (e.g., an NFT) representing the property.
 Property details (e.g., address, size, price) are stored immutably on-chain.
 Listings can include multimedia (e.g., photos, videos) linked via decentralized storage (e.g., IPFS).
+
+
+
+
 3.2. Marketing and Showings
 Traditional Process: Agents market properties and arrange viewings.
 Smart Contract Approach:
@@ -46,29 +53,54 @@ Marketing can be decentralized through blockchain-based platforms or social netw
 Virtual tours or 3D models can be linked to the property’s token.
 Showings may still require physical access, but scheduling could be managed via the smart contract.
 3.3. Offers and Negotiations
+
+
+
+
 Traditional Process: Buyers submit offers, which sellers accept, reject, or counter.
 Smart Contract Approach:
 Buyers can submit offers directly to the smart contract, specifying price and conditions.
 The smart contract can handle multiple offers, allowing sellers to choose or counter.
 Negotiations can be automated through predefined rules (e.g., accepting the highest bid after a deadline).
+
+
+
+
+
 3.4. Contract Signing
 Traditional Process: A legally binding contract is signed, often with contingencies.
 Smart Contract Approach:
 The smart contract itself serves as the binding agreement.
 Contingencies (e.g., inspection, financing) can be coded as conditions that must be met for the transaction to proceed.
 Digital signatures or blockchain-based authentication can replace traditional signatures.
+
+
+
+
+
+
 3.5. Inspections and Appraisals
 Traditional Process: Inspectors and appraisers evaluate the property.
 Smart Contract Approach:
 Results of inspections and appraisals can be uploaded to the blockchain via oracles (trusted third-party services).
 The smart contract can require these reports before allowing the transaction to proceed.
 Decentralized networks of inspectors/appraisers could be incentivized through tokens.
+
+
+
+
+
 3.6. Financing
 Traditional Process: Buyers secure loans from lenders.
 Smart Contract Approach:
 While the smart contract may not handle financing directly, it can integrate with decentralized finance (DeFi) platforms for loans.
 Proof of financing (e.g., a lender’s commitment) can be required as a condition in the smart contract.
 Escrow mechanisms can hold funds until all conditions are met.
+
+
+
+
+
 3.7. Closing
 Traditional Process: Ownership is transferred, and funds are exchanged, often through a title company.
 Smart Contract Approach:
