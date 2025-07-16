@@ -217,3 +217,6 @@ npx hardhat run scripts/deploy.js --network ganache
 npx hardhat run scripts/interact.js --network ganache
 npx hardhat run scripts/verify-contract.js --network ganache
 npx hardhat run scripts/auction-demo.js --network ganache
+
+
+
