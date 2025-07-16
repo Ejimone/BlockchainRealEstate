@@ -25,6 +25,7 @@ contract RealEstate is ERC721, Ownable {
     mapping(uint256 => uint256) public escrowBalances;
     mapping(address => uint256[]) private ownerProperties;
     mapping(uint256 => address) private propertyApprovals;
+    address public appraiser;
 
 
     uint256 private _propertyIdCounter;
@@ -63,9 +64,13 @@ contract RealEstate is ERC721, Ownable {
         require(properties[propertyId].buyer == msg.sender, "Not the buyer");
         _;
     }
-
     modifier onlyInspector(uint256 propertyId) {
         require(properties[propertyId].isInspectionPassed, "Inspection not passed");
+        _;
+    }
+
+    modifier onlyAppraiser() {
+        require(msg.sender == appraiser, "Not the appraiser");
         _;
     }
 
@@ -73,6 +78,7 @@ contract RealEstate is ERC721, Ownable {
 
     constructor() ERC721("RealEstateNFT", "RENFT") Ownable(msg.sender) {
         _propertyIdCounter = 0;
+        appraiser = msg.sender;
     }
 
 
@@ -153,6 +159,15 @@ contract RealEstate is ERC721, Ownable {
         }
     }
 
+    // function for inspecting a property
+    function inspectProperty(uint256 propertyId) external onlyAppraiser {
+        require(properties[propertyId].isListed, "Property not listed");
+        require(!properties[propertyId].isInspectionPassed, "Inspection already passed");
+
+        // Simulate inspection logic here
+        properties[propertyId].isInspectionPassed = true;
+        emit InspectionUpdated(propertyId, true);
+    }
 
     // complete transactions if conditions are met
     function CompleteTransaction(uint256 propertyId) external {
@@ -172,7 +187,29 @@ contract RealEstate is ERC721, Ownable {
         payable(property.seller).transfer(escrowBalances[propertyId]);
         escrowBalances[propertyId] = 0;
         emit TransactionCompleted(propertyId, property.buyer, property.price);
+    }
 
+
+    // function to reject an offer
+    function rejectOffer(uint256 propertyId) external onlySeller(propertyId) {
+        require(properties[propertyId].isListed, "Property not listed");
+        require(properties[propertyId].offerAmount > 0, "No offer to reject");
+
+        address payable buyer = properties[propertyId].buyer;
+        uint256 offerAmount = properties[propertyId].offerAmount;
+
+        // Reset the offer
+        properties[propertyId].offerAmount = 0;
+        properties[propertyId].buyer = payable(address(0));
+        escrowBalances[propertyId] -= offerAmount;
+
+        // Refund the deposit to the buyer
+        if (offerAmount > 0) {
+            buyer.transfer(offerAmount);
+        }
+
+        emit OfferRejected(propertyId, buyer);
+        properties[propertyId].isListed = true; // Keep the property listed after rejecting the offer
     }
 
 
@@ -187,5 +224,39 @@ contract RealEstate is ERC721, Ownable {
         properties[propertyId].buyer = payable(address(0));
         properties[propertyId].offerAmount = 0;
         escrowBalances[propertyId] = 0;
+    }
+
+
+
+    function delistProperty(uint256 propertyId) external onlySeller(propertyId) {
+        require(properties[propertyId].isListed, "Property not listed");
+        properties[propertyId].isListed = false;
+        emit PropertyDelisted(propertyId, msg.sender);
+    }
+
+    function setAppraiser(address _appraiser) external onlyOwner {
+        appraiser = _appraiser;
+    }
+    function getPropertyDetails(uint256 propertyId) external view returns (Property memory) {
+        return properties[propertyId];
+    }
+
+
+
+    function getPropertyOwner(uint256 propertyId) external view returns (address) {
+        return ownerOf(propertyId);
+    }
+
+
+    function withdrawEscrow(uint256 propertyId) external onlyOwner {
+        require(escrowBalances[propertyId] > 0, "No funds in escrow");
+        uint256 amount = escrowBalances[propertyId];
+        escrowBalances[propertyId] = 0;
+        payable(msg.sender).transfer(amount);
+    }
+
+
+    function getSeller(uint256 propertyId) external view returns (address) {
+        return properties[propertyId].seller;
     }
 }
