@@ -207,3 +207,13 @@ frameworks that will be used:
 Hardhat
 Ethers.js
 React.js
+
+
+
+# Deploy new contract (auto-saves deployment info)
+npx hardhat run scripts/deploy.js --network ganache
+
+# Run any script (auto-detects contract and accounts)
+npx hardhat run scripts/interact.js --network ganache
+npx hardhat run scripts/verify-contract.js --network ganache
+npx hardhat run scripts/auction-demo.js --network ganache
