@@ -29,6 +29,7 @@ class Property(models.Model):
     area = models.PositiveIntegerField(null=True, blank=True)
     bedrooms = models.PositiveIntegerField(null=True, blank=True)
     bathrooms = models.PositiveIntegerField(null=True, blank=True)
+    transaction_hash = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.location
@@ -40,6 +41,7 @@ class Offer(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     expires_at = models.DateTimeField()
+    transaction_hash = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f'Offer for {self.property} by {self.buyer}'

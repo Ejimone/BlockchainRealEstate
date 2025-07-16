@@ -14,6 +14,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     address = models.CharField(max_length=255, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
+    eth_address = models.CharField(max_length=42, blank=True, null=True) # Ethereum address
 
     def __str__(self):
         return self.user.username
