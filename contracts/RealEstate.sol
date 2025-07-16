@@ -20,7 +20,7 @@ contract RealEstate is ERC721, Ownable {
         bool isInspectionPassed;
         bool FinancingApproved;
     }
-    
+
     mapping(uint256 => Property) private properties;
     mapping(uint256 => uint256) public escrowBalances;
     mapping(address => uint256[]) private ownerProperties;
@@ -30,7 +30,43 @@ contract RealEstate is ERC721, Ownable {
     uint256 private _propertyIdCounter;
 
 
+
+    event PropertyListed(uint256 indexed propertyId, address indexed seller, uint256 price, string details);
+    event OfferSubmitted(uint256 indexed propertyId, address indexed buyer, uint256 offerAmount);
+    event OfferAccepted(uint256 indexed propertyId, address indexed buyer, uint256 offerAmount);
+    event OfferRejected(uint256 indexed propertyId, address indexed buyer);
+    event InspectionUpdated(uint256 indexed propertyId, bool isPassed);
+    event FinancingApproved(uint256 indexed propertyId);
+    event FinancingRejected(uint256 indexed propertyId);
+    event PropertySold(uint256 indexed propertyId, address indexed buyer, uint256 salePrice);
+    event PropertyDelisted(uint256 indexed propertyId, address indexed seller);
+    event OwnershipTransferred(uint256 indexed propertyId, address indexed newOwner);
+    event TransactionCompleted(uint256 indexed propertyId, address indexed buyer, uint256 salePrice);
+
     constructor() ERC721("RealEstateNFT", "RENFT") Ownable(msg.sender) {
         _propertyIdCounter = 0;
     }
+
+
+    // List property as an NFT
+    function listProperty(uint256 price, string memory details) external {
+        uint256 propertyId = _propertyIdCounter++;
+        _mint(msg.sender, propertyId);
+
+        properties[propertyId] = Property({
+            price: price,
+            seller: payable(msg.sender),
+            location: details,
+            description: keccak256(abi.encodePacked(details)),
+            isListed: true,
+            isSold: false,
+            buyer: payable(address(0)),
+            offerAmount: 0,
+            isInspectionPassed: false,
+            FinancingApproved: false
+        });
+
+        emit PropertyListed(propertyId, msg.sender, price, details);
+    }
+
 }
