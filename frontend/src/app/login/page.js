@@ -15,12 +15,14 @@ const Login = () => {
     try {
       await login(credentials);
       const user = await getCurrentUser();
+      console.log('User data:', user);
       if (user.is_superuser) {
         router.push('/dashboard/admin');
       } else {
         router.push(`/dashboard/${user.user_type}`);
       }
     } catch (err) {
+      console.error('Login error:', err);
       alert('Error logging in');
     }
   };
