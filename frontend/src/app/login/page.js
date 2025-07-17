@@ -22,8 +22,11 @@ const Login = () => {
         router.push(`/dashboard/${user.user_type}`);
       }
     } catch (err) {
-      console.error('Login error:', err);
-      alert('Error logging in');
+      const errorMessage = err.response && err.response.data && err.response.data.error
+        ? err.response.data.error
+        : 'Error logging in';
+      console.error('Login error:', errorMessage);
+      alert(errorMessage);
     }
   };
 
