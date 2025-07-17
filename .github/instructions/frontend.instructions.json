@@ -1,0 +1,195 @@
+{
+  "projectContext": {
+    "name": "Blockchain Real Estate Frontend",
+    "description": "React.js frontend for a blockchain-based real estate system",
+    "backend": "Django with REST API",
+    "backendUrl": "http://localhost:8000",
+    "authentication": "JWT tokens stored in localStorage"
+  },
+  "userRoles": [
+    {
+      "name": "Buyer",
+      "permissions": ["view_properties", "search_properties", "submit_offers", "view_own_offers"]
+    },
+    {
+      "name": "Seller", 
+      "permissions": ["list_properties", "view_own_properties", "manage_offers", "accept_reject_offers"]
+    },
+    {
+      "name": "Admin",
+      "permissions": ["manage_users", "view_all_users", "view_all_properties", "update_property_status"]
+    },
+    {
+      "name": "Inspector",
+      "permissions": ["view_assigned_properties", "submit_inspection_results", "update_inspection_status"]
+    },
+    {
+      "name": "Appraiser",
+      "permissions": ["view_assigned_properties", "submit_appraisal_results", "update_appraisal_status"]
+    }
+  ],
+  "technicalStack": {
+    "framework": "React.js",
+    "routing": "React Router",
+    "styling": "Tailwind CSS",
+    "httpClient": "Axios or Fetch",
+    "jsVersion": "ES6+",
+    "language": "JavaScript with JSX"
+  },
+  "interfaces": {
+    "authentication": {
+      "pages": ["/register", "/login"],
+      "features": ["user registration", "user login", "role-based redirection"]
+    },
+    "buyer": {
+      "dashboard": "/buyer/dashboard",
+      "features": [
+        "view available properties",
+        "search properties", 
+        "submit offers",
+        "view submitted offers"
+      ]
+    },
+    "seller": {
+      "dashboard": "/seller/dashboard", 
+      "features": [
+        "list new properties",
+        "view listed properties",
+        "manage received offers",
+        "accept or reject offers"
+      ]
+    },
+    "admin": {
+      "dashboard": "/admin/dashboard",
+      "features": [
+        "manage users",
+        "view all users",
+        "view all properties",
+        "update property statuses"
+      ]
+    },
+    "inspector": {
+      "dashboard": "/inspector/dashboard",
+      "features": [
+        "view assigned properties",
+        "submit inspection results",
+        "update inspection status"
+      ]
+    },
+    "appraiser": {
+      "dashboard": "/appraiser/dashboard", 
+      "features": [
+        "view assigned properties",
+        "submit appraisal results", 
+        "update appraisal status"
+      ]
+    }
+  },
+  "apiEndpoints": {
+    "authentication": [
+      "POST /api/register/",
+      "POST /api/login/",
+      "POST /api/logout/"
+    ],
+    "properties": [
+      "GET /api/properties/",
+      "POST /api/properties/",
+      "GET /api/properties/<id>/",
+      "PUT /api/properties/<id>/",
+      "DELETE /api/properties/<id>/"
+    ],
+    "offers": [
+      "GET /api/offers/",
+      "POST /api/offers/",
+      "GET /api/offers/<id>/",
+      "PUT /api/offers/<id>/",
+      "DELETE /api/offers/<id>/"
+    ],
+    "users": [
+      "GET /api/users/",
+      "GET /api/users/<id>/",
+      "PUT /api/users/<id>/"
+    ],
+    "inspections": [
+      "GET /api/inspections/",
+      "POST /api/inspections/",
+      "PUT /api/inspections/<id>/"
+    ],
+    "appraisals": [
+      "GET /api/appraisals/",
+      "POST /api/appraisals/",
+      "PUT /api/appraisals/<id>/"
+    ]
+  },
+  "requirements": {
+    "architecture": [
+      "Modular component structure",
+      "Separate folders for components, pages, and services",
+      "Role-based access control",
+      "Path-by-path development approach"
+    ],
+    "authentication": [
+      "JWT token storage in localStorage",
+      "Token inclusion in API requests",
+      "Role-based dashboard redirection"
+    ],
+    "userExperience": [
+      "Clean, modern, responsive design",
+      "Intuitive user interface",
+      "User-friendly error handling",
+      "Real-time feedback for API calls"
+    ],
+    "codeQuality": [
+      "Modern JavaScript (ES6+)",
+      "Reusable components (PropertyCard, OfferCard)",
+      "Proper error handling",
+      "Clear component separation by role"
+    ]
+  },
+  "fileStructure": {
+    "components": [
+      "PropertyCard.js",
+      "OfferCard.js",
+      "UserCard.js",
+      "InspectionCard.js",
+      "AppraisalCard.js"
+    ],
+    "pages": [
+      "Login.js",
+      "Register.js", 
+      "BuyerDashboard.js",
+      "SellerDashboard.js",
+      "AdminDashboard.js",
+      "InspectorDashboard.js",
+      "AppraiserDashboard.js",
+      "PropertyDetails.js"
+    ],
+    "services": [
+      "api.js",
+      "auth.js",
+      "property.js",
+      "user.js",
+      "offer.js",
+      "inspection.js",
+      "appraisal.js"
+    ]
+  },
+  "developmentNotes": [
+    "Do not hardcode API endpoints - infer from Django backend structure",
+    "Implement automatic API endpoint discovery",
+    "Ensure role-based access control prevents unauthorized access",
+    "Structure frontend to match Django urls.py paths",
+    "Provide clear explanations for each section during development",
+    "Focus on code generation over lengthy explanations",
+    "Abstract complexity of backend interactions from users"
+  ],
+  "developmentFlow": [
+    "1. Authentication pages (/register, /login)",
+    "2. User dashboards (Buyer, Seller)",
+    "3. Admin interface", 
+    "4. Inspector interface",
+    "5. Appraiser interface",
+    "6. Property details and management",
+    "7. Offer management system"
+  ]
+}

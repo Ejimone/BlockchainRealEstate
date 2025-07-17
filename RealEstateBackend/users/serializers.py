@@ -10,10 +10,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     userprofile = UserProfileSerializer()
     password = serializers.CharField(write_only=True)
+    is_staff = serializers.BooleanField(read_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email', 'user_type', 'userprofile', 'password')
+        fields = ('id', 'username', 'email', 'user_type', 'userprofile', 'password', 'is_staff', 'is_superuser')
 
     def create(self, validated_data):
         userprofile_data = validated_data.pop('userprofile')
