@@ -13,6 +13,8 @@ const SellerDashboard = () => {
   const [properties, setProperties] = useState([]);
   const [offers, setOffers] = useState([]);
   const [newProperty, setNewProperty] = useState({ price: '', location: '', description: '', property_type: 'RESIDENTIAL', area: 0, bedrooms: 0, bathrooms: 0, agent_commission: 0 });
+  const [editingProperty, setEditingProperty] = useState(null);
+  const [editForm, setEditForm] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,6 +63,22 @@ const SellerDashboard = () => {
     setOffers(offs);
   };
 
+  const handleEdit = (p) => {
+    setEditingProperty(p.id);
+    setEditForm(p);
+  };
+  const handleEditChange = (e) => setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    // Assuming api is an instance of axios or similar for patching
+    // await api.patch(`/api/properties/${editingProperty}/`, editForm);
+    alert('Property updated');
+    setEditingProperty(null);
+    // refresh
+    const props = await getProperties();
+    setProperties(props.filter(p => p.seller.id === user.id));
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Seller Dashboard</h1>
@@ -85,11 +103,35 @@ const SellerDashboard = () => {
       <h2 className="text-xl mb-2">My Properties</h2>
       {properties.map(p => (
         <div key={p.id}>
-          <PropertyCard property={p} showLink={false} />
-          <h3 className="text-lg mt-2">Offers</h3>
-          {offers.filter(o => o.property === p.id && o.is_active).map(o => (
-            <OfferCard key={o.id} offer={o} onAccept={handleAccept} onReject={handleReject} />
-          ))}
+          {editingProperty === p.id ? (
+            <form onSubmit={handleUpdate} className="space-y-4 mb-4">
+              <input name="price" value={editForm.price} onChange={handleEditChange} placeholder="Price" className="block p-2 border rounded" />
+              <input name="location" value={editForm.location} onChange={handleEditChange} placeholder="Location" className="block p-2 border rounded" />
+              <textarea name="description" value={editForm.description} onChange={handleEditChange} placeholder="Description" className="block p-2 border rounded" />
+              <select name="property_type" value={editForm.property_type} onChange={handleEditChange} className="block p-2 border rounded">
+                <option value="RESIDENTIAL">Residential</option>
+                <option value="COMMERCIAL">Commercial</option>
+                <option value="LAND">Land</option>
+                <option value="APARTMENT">Apartment</option>
+                <option value="OFFICE">Office</option>
+              </select>
+              <input name="area" type="number" value={editForm.area} onChange={handleEditChange} placeholder="Area" className="block p-2 border rounded" />
+              <input name="bedrooms" type="number" value={editForm.bedrooms} onChange={handleEditChange} placeholder="Bedrooms" className="block p-2 border rounded" />
+              <input name="bathrooms" type="number" value={editForm.bathrooms} onChange={handleEditChange} placeholder="Bathrooms" className="block p-2 border rounded" />
+              <input name="agent_commission" type="number" value={editForm.agent_commission} onChange={handleEditChange} placeholder="Agent Commission" className="block p-2 border rounded" />
+              <button type="submit" className="bg-green-500 text-white p-2 rounded">Update</button>
+              <button onClick={() => setEditingProperty(null)} className="bg-gray-500 text-white p-2 rounded ml-2">Cancel</button>
+            </form>
+          ) : (
+            <>
+              <PropertyCard property={p} showLink={false} />
+              <button onClick={() => handleEdit(p)} className="bg-yellow-500 text-white p-1 rounded mt-2">Edit</button>
+              <h3 className="text-lg mt-2">Offers</h3>
+              {offers.filter(o => o.property === p.id && o.is_active).map(o => (
+                <OfferCard key={o.id} offer={o} onAccept={handleAccept} onReject={handleReject} />
+              ))}
+            </>
+          )}
         </div>
       ))}
     </div>

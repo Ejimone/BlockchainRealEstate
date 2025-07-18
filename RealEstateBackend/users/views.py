@@ -7,11 +7,28 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, get_user_model
+from rest_framework import permissions
+from .permissions import IsOwnerOrReadOnly
+from rest_framework.decorators import action
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated(), IsOwnerOrReadOnly() | permissions.IsAdminUser()]
+        elif self.action == 'retrieve':
+            return [permissions.IsAuthenticated()]
+        return [permissions.IsAdminUser()]
+
+    @action(detail=False, methods=['get'], url_path='me')
+    def me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
 
 class LoginView(ObtainAuthToken):
     serializer_class = AuthTokenSerializer

@@ -17,11 +17,11 @@ class PropertyViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAuthenticated, IsSeller]
+            self.permission_classes = [IsAuthenticated, IsSeller | permissions.IsAdminUser]
         elif self.action == 'update_inspection_status':
-            self.permission_classes = [IsAuthenticated, IsAppraiser | IsInspector]
+            self.permission_classes = [IsAuthenticated, IsAppraiser | IsInspector | permissions.IsAdminUser]
         elif self.action == 'complete_transaction':
-            self.permission_classes = [IsAuthenticated, IsSeller | IsBuyer]
+            self.permission_classes = [IsAuthenticated, IsSeller | IsBuyer | permissions.IsAdminUser]
         return super().get_permissions()
 
     def perform_create(self, serializer):
